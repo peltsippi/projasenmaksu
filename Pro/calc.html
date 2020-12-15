@@ -32,7 +32,7 @@
         Maksun katto(€)
     </div>
 	<div class="col-2">
-		<input type="number" readonly value="45" id="maxtotal" />
+		<input type="number" readonly value="49" id="maxtotal" />
     </div>
 </div>
   <div class="row my-4">
@@ -64,6 +64,7 @@
   let rate_percent = rate * 100;
   
   document.getElementById("rate_field").value = rate_percent;  
+  document.getElementById("maxtotal").value = maxtotal;
   
   let total = document.getElementById("income").value * rate;
   
