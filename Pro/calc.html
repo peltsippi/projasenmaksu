@@ -1,0 +1,79 @@
+<html>
+<meta charset="UTF-8">
+  <body>
+
+    <h1>PRO jäsenmaksulaskuri</h1>
+	
+	<h3>by <a href="https://github.com/peltsippi">Timo Pelkonen</a>
+	
+	<br>
+	<br>
+	Use at your own risk!
+	<br>
+	<br>
+	<br>
+  </body>
+  
+  
+  <div class="row">
+    <div class="col-6">
+        Bruttotulot (€)
+    </div>
+    <div class="col-3">
+        <input type="number" value="2345.67" class="mny" id="income"/>
+    </div>
+	<div class="col-6">
+       Maksuperuste (%)
+    </div>
+    <div class="col-2">
+		<input type="number" readonly value="1.25" id="rate_field" />
+    </div>
+	<div class="col-6">
+        Maksun katto(€)
+    </div>
+	<div class="col-2">
+		<input type="number" readonly value="45" id="maxtotal" />
+    </div>
+</div>
+  <div class="row my-4">
+        <div class="col-9 text-right total">
+         Total
+        </div>
+        <div class="col-2 total-val">
+          <span id="total_value">0</span>
+        </div>
+      </div>
+	  <script>
+	  setInterval(lookForChange, 100);
+	  var oldVal = document.getElementById("income").value;
+	  
+	  function lookForChange()
+{
+		var newVal = document.getElementById("income").value;
+		if (newVal != oldVal) {
+        oldVal = newVal;
+        calculateTotal();     // do whatever you need to do
+		}
+}
+  function calculateTotal()
+{
+  
+  let rate= 0.0125;
+  let maxtotal = 45;
+  
+  let rate_percent = rate * 100;
+  
+  document.getElementById("rate_field").value = rate_percent;  
+  
+  let total = document.getElementById("income").value * rate;
+  
+  total = Math.round((total) * 100) / 100;
+  
+  if (total > maxtotal) {total = maxtotal};
+ 
+  document.getElementById("total_value").textContent = total + " €";
+  
+}	  
+
+</script>
+</html>
