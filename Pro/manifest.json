@@ -3,6 +3,10 @@
   "description" : "Laskee pro jäsenmaksun suuruuden",
   "version": "1.0",
   "manifest_version": 2,
+  "icons": {
+  "16":"calc.png",
+  "48":"calc.png",
+  "128":"calc.png"},
   "browser_action": {
 	"default_popup": "calc.html",
     "default_icon": "calc.png",
