@@ -11,6 +11,6 @@
 	"default_popup": "calc.html",
     "default_icon": "calc.png",
 	"default_title":"Pro jäsenmaksulaskuri"},
-	"content_security_policy": "default-src 'self' 'sha256-MbJgH2g2Wc1/tZMkGJNOnzDKtP4gw6j3WMDwZmu2shc='",
+	"content_security_policy": "default-src 'self' 'sha256-DZRXcNYvwBn7v99znM5X1Ep6YiJuBy4S9sufNDO2XXs='",
 	"permissions": ["activeTab"]
 }
