@@ -1,16 +1,21 @@
 {
   "name": "Pro jäsenmaksulaskuri",
+  
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  },
   "description" : "Laskee pro jäsenmaksun suuruuden",
   "version": "1.0",
   "manifest_version": 2,
   "icons": {
-  "16":"calc.png",
-  "48":"calc.png",
-  "128":"calc.png"},
+  "16":"icon_16.png",
+  "48":"icon_48.png",
+  "128":"icon_128.png"},
   "browser_action": {
 	"default_popup": "calc.html",
     "default_icon": "calc.png",
 	"default_title":"Pro jäsenmaksulaskuri"},
-	"content_security_policy": "default-src 'self' 'sha256-UK66/IADJykokeHbdKx3KytWn34Ov3w0Dxdwq8lFbO8='",
-	"permissions": ["activeTab"]
+	"content_security_policy": "default-src 'self' 'sha256-MbJgH2g2Wc1/tZMkGJNOnzDKtP4gw6j3WMDwZmu2shc='",
+	"permissions": ["activeTab","storage"]
 }
