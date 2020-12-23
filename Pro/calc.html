@@ -3,12 +3,13 @@
   <body>
 
     <h1>PRO jäsenmaksulaskuri</h1>
+	<img src="icon_128.png">
 	
 	<h3>by <a href="https://github.com/peltsippi">Timo Pelkonen</a>
 	
 	<br>
 	<br>
-	Use at your own risk!
+	Käytä omalla vastuulla!
 	<br>
 	<br>
 	<br>
@@ -43,37 +44,7 @@
           <span id="total_value">0</span>
         </div>
       </div>
-	  <script>
-	  setInterval(lookForChange, 100);
-	  var oldVal = document.getElementById("income").value;
-	  
-	  function lookForChange()
-{
-		var newVal = document.getElementById("income").value;
-		if (newVal != oldVal) {
-        oldVal = newVal;
-        calculateTotal();     // do whatever you need to do
-		}
-}
-  function calculateTotal()
-{
-  
-  let rate= 0.0125;
-  let maxtotal = 45;
-  
-  let rate_percent = rate * 100;
-  
-  document.getElementById("rate_field").value = rate_percent;  
-  
-  let total = document.getElementById("income").value * rate;
-  
-  total = Math.round((total) * 100) / 100;
-  
-  if (total > maxtotal) {total = maxtotal};
- 
-  document.getElementById("total_value").textContent = total + " €";
-  
-}	  
-
+	  <button id="settings">Avaa asetukset</button>
+	  <script src="calc.js">
 </script>
 </html>
