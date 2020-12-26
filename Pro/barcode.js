@@ -63,9 +63,16 @@ function generate_barcode() {
 	//just example, this is hardcoded stuff
 	if (startcode != "105") {
 		console.log("shit gonna go wrong do something!");
-		//how to convert standard account number format to machine readable account number?
+
 	}
 	
+	if (!account) {
+		alert("Account field not filled!");
+	}
+	//first check: is it in FIXXXX format?
+	
+	//second check: does lenght match? If not, can it be transformed?
+			//how to convert standard account number format to machine readable account number?
 	if (account.length != 16) {
 		console.log("account lenght bad, shit gonna go wrong do something!");
 	}
@@ -97,7 +104,7 @@ function generate_barcode() {
 		}
 		if (i >= 1) {
 		var j = i-1;
-		weightedsum = weightedsum + parseInt(barcodechunks[i-1]) * i;
+		weightedsum = weightedsum + Number(barcodechunks[i-1]) * i;
 		console.log("Weighted sum: " + weightedsum);
 	} }
 	
