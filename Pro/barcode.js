@@ -30,7 +30,7 @@ function save_options() {
 /*
  Restores select box and checkbox state using the preferences
  stored in chrome.storage.
-*/
+
 function restore_options() {
   console.log("Haetaan chromesta aikaisemmin asetettuja arvoja");
   chrome.storage.sync.get({
@@ -44,8 +44,7 @@ function restore_options() {
 
   });
 }
-
-
+*/
 
 function generate_barcode() {
 	//get all required information
@@ -56,15 +55,21 @@ function generate_barcode() {
 	var sum_eur = "12451"; // 6 numbers
 	var sum_cnt = "4";
 	var reserve = "000";
-	var duedate = "214914"; //YYMMDD
+	var duedate; //YYMMDD
+//	var duedate = "214914"; //YYMMDD
 	
 	//make sure all information is in sane format
 	
-	//just example, this is hardcoded stuff that should not be changed ever
+	/*just example, this is hardcoded stuff that should not be changed ever
 	if (startcode != "105") {
 		console.log("shit gonna go wrong do something!");
 
 	}
+	*/
+	//*****************************
+	//1. account number check
+	//*****************************
+	
 	
 	if (!account) {
 		alert("Account field not filled!");
@@ -77,6 +82,9 @@ function generate_barcode() {
 	account.toUpperCase();
 	console.log("account number chars changed to upper case :" + account);
 	
+	
+	console.log("todo: validate iban number!******************");
+	console.log("parse accnount number to numeral only for the barcode!***********");
 	/*first check: IBAN check. This should vaildate the whole account number so no further checks needed.
 	
 	1. move first 4 chars to end
@@ -101,9 +109,9 @@ function generate_barcode() {
 	*/
 	
 	
-	// collect stuff here
-	
-	//reference number check
+	//*****************************
+	// 2. reference number check
+	//*****************************
 	if (ref.length <= 20) {
 		//do something
 		var diff = 20 - ref.length;
@@ -122,6 +130,18 @@ function generate_barcode() {
 		alert("Tarkasta viitenumero, se on liian pitkä!");
 	}
 	
+	//*****************************
+	// 3. money sum euro + cnt separated
+	//*****************************
+	var totalsum = String(document.getElementById('sum').value);
+	console.log("Total sum: " + totalsum);
+	
+	totalsum = totalsum.split('.');
+	
+	console.log("Split sum: " + totalsum[0] + " and " + totalsum[1]);
+	sum_eur = totalsum[0];
+	sum_cnt = totalsum[1];
+	
 	if (sum_eur.length > 6) {
 		alert("Liian iso euromääräinen summa!");
 	}
@@ -139,15 +159,45 @@ function generate_barcode() {
 	
 	if (sum_cnt.length < 2) {
 		console.log("Need " + String(2-sum_cnt.length) + " longer number for cnt sum");
-		var filling = filler
+		var filling = filler(2-sum_cnt.length);
+		sum_cnt = sum_cnt + filling;
 	}
+	console.log("Cents: " +sum_cnt);
+	
+	
+	//*****************************
+	// 4. duedate
+	//*****************************
+	
+	/*
+	var date = new Date($('#date-input').val());
+              var day = $('#date-input').getDate();
+              var month = $('#date-input').getMonth() + 1;
+              var year = $('#date-input').getFullYear();
+              alert(day+"/"+ month+"/"+year);
+			  */
+			  
+	var tempdate = document.getElementById('date').value;
+	tempdate = tempdate.split("-");
+	
+	/*
+	console.log("date components: " + tempdate[0] +" & " + tempdate[1] + " & " + tempdate[2]);
+	console.log("Year testing: " + tempdate[0].charAt(2) + tempdate[0].charAt(3));
+	*/
+	
+	duedate = tempdate[0].charAt(2) + tempdate[0].charAt(3) + tempdate[1] + tempdate[2]
+	console.log("final YY MM DD format:" + duedate);
+	
 	//note: this is not full barcode yet! checksum missing
+	
 	//format: startcode [3] + version [1] + account number [16] + euro [6] + cnt [2] + spare [3] + ref [20] + duedate [6] YYMMDD + checksum. total: 54 (from version to due date)
 	var barcode = startcode + version + account + ref + sum_eur + sum_cnt + reserve + duedate;
 	
 	console.log("full barcode w/o checksum: " + barcode);
 	
-	//calculate checksum
+	//*****************************
+	// calculate checksum for barcode
+	//*****************************
 	
 	
 	var i;
