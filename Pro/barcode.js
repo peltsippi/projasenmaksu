@@ -69,15 +69,36 @@ function generate_barcode() {
 	if (!account) {
 		alert("Account field not filled!");
 	}
-	//first check: is it in FIXXXX format?
+	// step x + 1 = remove all blanks
+	account.replace(/\s/g, "");
+	console.log("account number with blanks removed: " + account);
 	
-	//second check: does lenght match? If not, can it be transformed?
-			//how to convert standard account number format to machine readable account number?
+	//step x + 2 = to uppercase
+	account.ToUpperCase();
+	console.log("account number chars changed to upper case :" + account);
+	
+	/*first check: IBAN check. This should vaildate the whole account number so no further checks needed.
+	
+	1. move first 4 chars to end
+	2. replace alphabets with numbers. A=10, B=11 etc Z=35
+	3. divide with 97.
+	4. var chekcsum = number % 97
+	5. if checksum = 1 -> all ok
+	
+	how to replace alphabets with numbers.
+	function alphabetPosition(text) {
+		for (var i = 0; i < text.length; i++) {
+		var code = text.toUpperCase().charCodeAt(i)
+	}}
+	*/
+	
+	/*
+	Unnecessary due to IBAN check!
 	if (account.length != 16) {
 		console.log("account lenght bad, shit gonna go wrong do something!");
 	}
 	
-	
+	*/
 	
 	
 	// collect stuff here

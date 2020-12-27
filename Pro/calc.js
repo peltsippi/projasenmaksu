@@ -1,7 +1,8 @@
 	  setInterval(lookForChange, 100);
 	  var oldVal = document.getElementById("income").value;
 
-document.addEventListener('DOMContentLoaded', calculateTotal);
+document.addEventListener('DOMContentLoaded', restore_options);
+
 document.getElementById('settings').addEventListener('click', function() {
   if (chrome.runtime.openOptionsPage) {
     chrome.runtime.openOptionsPage();
@@ -36,4 +37,20 @@ document.getElementById('settings').addEventListener('click', function() {
  
   document.getElementById("total_value").textContent = total + " €";
   
-}	  
+}	
+
+function restore_options() {
+  console.log("Haetaan chromesta aikaisemmin asetettuja arvoja");
+  chrome.storage.sync.get({
+    fee_rate: "1.25",
+    fee_max: "49"
+  }, function(items) {
+      console.log("haettu arvot: " + items.fee_rate + " & " + items.fee_max + ". ,asetetaan ne formiin");
+	  
+	  document.getElementById('rate_field').value = items.fee_rate;
+	  document.getElementById('maxtotal').value = items.fee_max;
+
+  });
+  console.log("sit vielä lasketaan ekan kerran");
+  calculateTotal;
+}
