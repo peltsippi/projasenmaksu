@@ -38,7 +38,7 @@ document.getElementById('settings').addEventListener('click', function() {
   document.getElementById("total_value").textContent = total + " €";
   
 }	
-
+//todo: this function is twice in the codebase, do something later on!
 function restore_options() {
   console.log("Haetaan chromesta aikaisemmin asetettuja arvoja");
   chrome.storage.sync.get({

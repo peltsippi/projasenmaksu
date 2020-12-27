@@ -60,7 +60,7 @@ function generate_barcode() {
 	
 	//make sure all information is in sane format
 	
-	//just example, this is hardcoded stuff
+	//just example, this is hardcoded stuff that should not be changed ever
 	if (startcode != "105") {
 		console.log("shit gonna go wrong do something!");
 
@@ -74,7 +74,7 @@ function generate_barcode() {
 	console.log("account number with blanks removed: " + account);
 	
 	//step x + 2 = to uppercase
-	account.ToUpperCase();
+	account.toUpperCase();
 	console.log("account number chars changed to upper case :" + account);
 	
 	/*first check: IBAN check. This should vaildate the whole account number so no further checks needed.
@@ -103,8 +103,46 @@ function generate_barcode() {
 	
 	// collect stuff here
 	
+	//reference number check
+	if (ref.length <= 20) {
+		//do something
+		var diff = 20 - ref.length;
+		var filling = filler(diff);
+		
+		/*= "";
+		var i;
+		for (i=1;i<= diff;i++) {
+			filler = filler + "0";
+		}*/
+	console.log("whole reference number : " + filling + ref);
+	ref = filling + ref;
+		
+	}
+	if (ref.length > 20 ) {
+		alert("Tarkasta viitenumero, se on liian pitkä!");
+	}
 	
-	//note: this is not full barcode!
+	if (sum_eur.length > 6) {
+		alert("Liian iso euromääräinen summa!");
+	}
+	if (sum_cnt.length > 2) {
+		alert("Tarkasta summa, senttien määrä väärä!");
+	}
+	
+	if (sum_eur.length < 6) {
+		console.log("Need " + String(6-sum_eur.length) + " longer number for euro sum");
+		var filling = filler(6-sum_eur.length);
+		sum_eur = filling + sum_eur;
+		//add filler here later
+	}
+	console.log("Euros: " + sum_eur);
+	
+	if (sum_cnt.length < 2) {
+		console.log("Need " + String(2-sum_cnt.length) + " longer number for cnt sum");
+		var filling = filler
+	}
+	//note: this is not full barcode yet! checksum missing
+	//format: startcode [3] + version [1] + account number [16] + euro [6] + cnt [2] + spare [3] + ref [20] + duedate [6] YYMMDD + checksum. total: 54 (from version to due date)
 	var barcode = startcode + version + account + ref + sum_eur + sum_cnt + reserve + duedate;
 	
 	console.log("full barcode w/o checksum: " + barcode);
@@ -152,7 +190,18 @@ function uimessage(message, time = 1000) {
 	status.textContent = message;
 }
 
-/**
+
+function filler(qty) {
+	var i;
+	var fill = "";
+	for (i=1; i<= qty; i++) {
+		fill = fill + "0";
+	}
+	console.log("filler: " + fill);
+	return fill;
+}
+	
+	/**
 https://gist.github.com/hendriklammers/5231994#file-splitstring-js-L7
  * Split a string into chunks of the given size
  * @param  {String} string is the String to split
