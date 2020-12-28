@@ -1,5 +1,20 @@
 /* Creates virtua barcode from given information */
 
+{
+	var errormode = new Boolean(false);
+	console.log("errormode initialized: " + errormode);
+	var errorcode;
+	
+	/* errorcodes: TO BE IMPLEMENTED!
+	1. 
+	2.
+	3.
+	4.
+	5.
+	6.
+	
+	*/
+}
 
 function save_options() {
 	console.log("save button pressed");
@@ -47,7 +62,7 @@ function restore_options() {
 */
 
 function generate_barcode() {
-	//get all required information
+	//initialize stuff
 	var startcode = "105";
 	var version = "4";
 	var account = document.getElementById('account').value; // 16 numbers - need to be formed
@@ -55,11 +70,13 @@ function generate_barcode() {
 	var sum_eur = "12451"; // 6 numbers
 	var sum_cnt = "4";
 	var reserve = "000";
-	var duedate; //YYMMDD
+	var duedate; //YYMMDD, formed with tempdate later on so no sense define here
 //	var duedate = "214914"; //YYMMDD
-	
+
+	//*****************************	
 	//make sure all information is in sane format
-	
+	//*****************************
+		
 	/*just example, this is hardcoded stuff that should not be changed ever
 	if (startcode != "105") {
 		console.log("shit gonna go wrong do something!");
@@ -72,20 +89,90 @@ function generate_barcode() {
 	
 	
 	if (!account) {
-		alert("Account field not filled!");
+		alert("Tilinumeroa ei täytetty!");
+		errormode = true;
+		console.log("errormode set at: no account number defined");
 	}
 	// step x + 1 = remove all blanks
-	account.replace(/\s/g, "");
+	account = account.replaceAll(/\s/g, "");
+	//account.replace("F","G");
+	//account.replace(/ /g,"");
+	//account.split(' ').join('');
+	//account.split(" ");
+	//account.replace(" ", "");
 	console.log("account number with blanks removed: " + account);
+	//THIS DOES NOT WORK AT THE MOMENT! makes everything else fail later on.
+	
 	
 	//step x + 2 = to uppercase
 	account.toUpperCase();
-	console.log("account number chars changed to upper case :" + account);
+	console.log("account number chars changed to upper case (just in case) :" + account);
 	
+	//step x + 3 = iban validation check 1 -> move first 4 chars to end
+	
+	var acc_moved = account.substr(4,) + account.substr(0,4);
+	console.log("iban validation format phase 1: " + acc_moved);
+	
+	//step x + 4 = replace aphabet with numbers A=10, B=11 etc..
+	
+	/* unicode:
+	space = 20
+	0 = 48
+	1 = 49
+	...
+	9 = 57
+	
+	A = 65
+	B = 66
+	...
+	
+	*/
+	
+	var offset;
+	var offset_number = -48;
+	var offset_letter = -55;
+	var acc_checksum = "";
+	var j;
+	for (j=0; j < acc_moved.length;j++) {
+		var charcode = acc_moved.charCodeAt(j)
+		// unnecessary: console.log("charcode at " + j + " is " + charcode);
+		if (charcode > 60) {
+			offset = offset_letter;
+		}
+		if (charcode < 60) {
+			offset = offset_number;
+		}
+		//fix the offset
+		charcode = charcode + offset;
+		console.log("character " + acc_moved.charAt(j) + " converted to " + charcode);
+		acc_checksum = acc_checksum + charcode;
+	}
+	console.log("account number: " + account + " and checksum number: " + acc_checksum);
+	
+	var remainder = acc_checksum % 97;
+	console.log("Account checksum remainder: " + remainder);
+	var control = 97 + 1 - Number(remainder);
+	console.log("97+1 - remainder: " + 	control);
+	if (remainder != 1) {
+		console.log("Account number check failed!");
+		alert("Tarkasta tilinumero!");
+		errormode = true;
+	}
+	/*
+	var offset = -55; //offset fr charcodeat function, A = 10 B = 11 etc..
+	var firstletter = account.charCodeAt(0) + offset;
+	console.log("first letter = " + account.charAt(0) + " and its value: " + firstletter);
+	var secondletter = Number(account.charCodeAt(1)) + offset;
+	console.log("second letter = " + account.charAt(1) + " and its value: " + secondletter);
+	
+	var ibanvalidate = account.substr(4,) + account.charCodeAt(0) + account.charCodeAt(1) + account.substr(3,4);
+	console.log("iban validate: " + ibanvalidate);
 	
 	console.log("todo: validate iban number!******************");
 	console.log("parse accnount number to numeral only for the barcode!***********");
-	/*first check: IBAN check. This should vaildate the whole account number so no further checks needed.
+	*/
+	
+	/*IBAN check. This should vaildate the whole account number so no further checks needed.
 	
 	1. move first 4 chars to end
 	2. replace alphabets with numbers. A=10, B=11 etc Z=35
@@ -100,18 +187,16 @@ function generate_barcode() {
 	}}
 	*/
 	
-	/*
-	Unnecessary due to IBAN check!
-	if (account.length != 16) {
-		console.log("account lenght bad, shit gonna go wrong do something!");
-	}
-	
-	*/
-	
-	
 	//*****************************
 	// 2. reference number check
 	//*****************************
+	
+	if (!ref) {
+		alert("Viitenumeroa ei täytetty!");
+		errormode = true;
+		console.log("errormode set: no reference number");
+	}
+	
 	if (ref.length <= 20) {
 		//do something
 		var diff = 20 - ref.length;
@@ -128,6 +213,8 @@ function generate_barcode() {
 	}
 	if (ref.length > 20 ) {
 		alert("Tarkasta viitenumero, se on liian pitkä!");
+		errormode = true;
+		console.log("errormode set: too long reference number");
 	}
 	
 	//*****************************
@@ -144,9 +231,13 @@ function generate_barcode() {
 	
 	if (sum_eur.length > 6) {
 		alert("Liian iso euromääräinen summa!");
+		errormode = true;
+		console.log("errormode set, too large euro sum");
 	}
 	if (sum_cnt.length > 2) {
-		alert("Tarkasta summa, senttien määrä väärä!");
+		alert("Tarkasta summa, senttien määrä väärä! Todennäköisesti bugi tässä koodissa");
+		errormode = true;
+		console.log("errormode set, cnt sum does not match");
 	}
 	
 	if (sum_eur.length < 6) {
@@ -168,16 +259,14 @@ function generate_barcode() {
 	//*****************************
 	// 4. duedate
 	//*****************************
-	
-	/*
-	var date = new Date($('#date-input').val());
-              var day = $('#date-input').getDate();
-              var month = $('#date-input').getMonth() + 1;
-              var year = $('#date-input').getFullYear();
-              alert(day+"/"+ month+"/"+year);
-			  */
-			  
+	 
 	var tempdate = document.getElementById('date').value;
+	
+	if (Date.parse(tempdate)-Date.parse(new Date())< 0) {
+		alert("Päivämäärä menneisyydessä!");
+		errormode = true;
+		console.log("errormode set, due date in past");
+	}
 	tempdate = tempdate.split("-");
 	
 	/*
@@ -222,6 +311,19 @@ function generate_barcode() {
 	var checksum = weightedsum % 103;
 	console.log("Checksum: " + checksum);
 	//output and something
+	
+	//this errormode shit does not work
+	if (!errormode) {
+		//no errors, output barcode 
+	}
+	if (errormode) {
+		uimessage("Virhe tapahtunut, viivakoodia ei voida muodostaa!");
+		
+	}
+	//reset any possible errors
+	
+	console.log("Errormode before reset: " + errormode);
+	errormode = false;
 	
 }
 
