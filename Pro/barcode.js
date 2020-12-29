@@ -2,7 +2,7 @@
 
 {
 	var errormode = new Boolean(false);
-	console.log("errormode initialized: " + errormode);
+	console.log("errormode initialized, state: " + errormode);
 	var errorcode;
 	
 	/* errorcodes: TO BE IMPLEMENTED!
@@ -63,7 +63,8 @@ function restore_options() {
 
 function generate_barcode() {
 	//initialize stuff
-	var startcode = "105";
+	var startcode = "" ;
+	//was "105" but should not be printed!;
 	var version = "4";
 	var account = document.getElementById('account').value; // 16 numbers - need to be formed
 	var ref = document.getElementById('reference').value; //20 numbers fill zeroes on front
@@ -87,6 +88,21 @@ function generate_barcode() {
 	//1. account number check
 	//*****************************
 	
+	/*IBAN check. This should vaildate the whole account number so no further checks needed.
+	
+	1. move first 4 chars to end
+	2. replace alphabets with numbers. A=10, B=11 etc Z=35
+	3. divide with 97.
+	4. var chekcsum = number % 97
+	4.1: cannot calculate 20 long int because of limitations, rework calculation to split calculations into smaller chunks and combine end result.
+	5. if checksum = 1 -> all ok
+	
+	how to replace alphabets with numbers.
+	function alphabetPosition(text) {
+		for (var i = 0; i < text.length; i++) {
+		var code = text.toUpperCase().charCodeAt(i)
+	}}
+	*/
 	
 	if (!account) {
 		alert("Tilinumeroa ei täytetty!");
@@ -95,14 +111,7 @@ function generate_barcode() {
 	}
 	// step x + 1 = remove all blanks
 	account = account.replaceAll(/\s/g, "");
-	//account.replace("F","G");
-	//account.replace(/ /g,"");
-	//account.split(' ').join('');
-	//account.split(" ");
-	//account.replace(" ", "");
 	console.log("account number with blanks removed: " + account);
-	//THIS DOES NOT WORK AT THE MOMENT! makes everything else fail later on.
-	
 	
 	//step x + 2 = to uppercase
 	account.toUpperCase();
@@ -147,9 +156,8 @@ function generate_barcode() {
 		console.log("character " + acc_moved.charAt(j) + " converted to " + charcode);
 		acc_checksum = acc_checksum + charcode;
 	}
-	console.log("account number: " + account + " and checksum number: " + acc_checksum);
+	console.log("account number: " + account + " and checksum for calculation: " + acc_checksum);
 	
-	//this does not work because 16 numbers is too much for javascript!
 	
 	/*
 	working example:
@@ -168,14 +176,13 @@ function generate_barcode() {
 	
 	*/
 	
-	//split checksum to half
+	//split checksum to half and calculate modulo, see more detailed description below.
 	
 	var splitlen = 10;
 	var multip = Number("1"+filler(splitlen));
 	console.log("first part split length: " + splitlen);
 	console.log("first part multiplier to make number smaller: " + multip);
 
-	
 	var acc_checksum_start = Number(acc_checksum.substr(0,splitlen));
 
 	console.log("reconstructed first number: " + acc_checksum_start * multip);
@@ -195,43 +202,22 @@ function generate_barcode() {
 	console.log("remainder: " + remainder);
 	
 	if (remainder != 1) {
-		console.log("Account number check failed!");
+		console.log("Errormode set: account number check failed!");
 		alert("Tarkasta tilinumero!");
 		errormode = true;
 	}
 	
-	//var testnumber = toInt32(12345600000785151821)
-	//test acc no FI2112345600000785
-	//var testremainder = testnumber % (97);
-	//console.log("Test calc with example number (" + testnumber + ") : " + testremainder);
-	/*
-	var offset = -55; //offset fr charcodeat function, A = 10 B = 11 etc..
-	var firstletter = account.charCodeAt(0) + offset;
-	console.log("first letter = " + account.charAt(0) + " and its value: " + firstletter);
-	var secondletter = Number(account.charCodeAt(1)) + offset;
-	console.log("second letter = " + account.charAt(1) + " and its value: " + secondletter);
 	
-	var ibanvalidate = account.substr(4,) + account.charCodeAt(0) + account.charCodeAt(1) + account.substr(3,4);
-	console.log("iban validate: " + ibanvalidate);
+	// x + 99999 -> formulate account numbber correctly for barcode (remove first 2 chars)
 	
-	console.log("todo: validate iban number!******************");
-	console.log("parse accnount number to numeral only for the barcode!***********");
-	*/
+	account = account.substr(2,);
+	console.log("Account number for barcode: " + account);
 	
-	/*IBAN check. This should vaildate the whole account number so no further checks needed.
-	
-	1. move first 4 chars to end
-	2. replace alphabets with numbers. A=10, B=11 etc Z=35
-	3. divide with 97.
-	4. var chekcsum = number % 97
-	5. if checksum = 1 -> all ok
-	
-	how to replace alphabets with numbers.
-	function alphabetPosition(text) {
-		for (var i = 0; i < text.length; i++) {
-		var code = text.toUpperCase().charCodeAt(i)
-	}}
-	*/
+	if (account.length != 16) {
+		console.log("errormode set: account number has some strange issues with length.");
+		alert("Outo virhe tilinumeron kanssa, jaa-a.");
+		errormode = true;
+	}
 	
 	//*****************************
 	// 2. reference number check
@@ -242,6 +228,9 @@ function generate_barcode() {
 		errormode = true;
 		console.log("errormode set: no reference number");
 	}
+	
+	//TODO = REMOVE BLANKS!
+	ref = ref.replaceAll(/\s/g, "");
 	
 	if (ref.length <= 20) {
 		//do something
@@ -326,7 +315,7 @@ function generate_barcode() {
 	//note: this is not full barcode yet! checksum missing
 	
 	//format: startcode [3] + version [1] + account number [16] + euro [6] + cnt [2] + spare [3] + ref [20] + duedate [6] YYMMDD + checksum. total: 54 (from version to due date)
-	var barcode = startcode + version + account + ref + sum_eur + sum_cnt + reserve + duedate;
+	var barcode = startcode + version + account + sum_eur + sum_cnt + reserve + ref + duedate;
 	
 	console.log("full barcode w/o checksum: " + barcode);
 	
@@ -337,7 +326,7 @@ function generate_barcode() {
 	
 	var i;
 	var weightedsum = 0;
-	var barcodetemp = barcode.slice(3); //remove first 3 starting code here
+	var barcodetemp = barcode.slice(startcode.length); //remove starting code here
 //	var barcodechunks = barcode.split(/(.{2}/);
 	var barcodechunks = splitString(barcodetemp, 2);
 	for (i=0; i <= 27; i++) {
@@ -358,14 +347,20 @@ function generate_barcode() {
 	console.log("Checksum: " + checksum);
 	//output and something
 	
-	//this errormode shit does not work
-	if (!errormode) {
+	//barcode = barcode + checksum; NOTE: virtual barcode does not even require that checksum!
+	
+	uimessage(barcode);
+	
+	//this errormode shit does not work, to be done later on.
+	
+	
+	/*if (errormode = false) {
 		//no errors, output barcode 
 	}
-	if (errormode) {
+	if (errormode = true) {
 		uimessage("Virhe tapahtunut, viivakoodia ei voida muodostaa!");
 		
-	}
+	}*/
 	//reset any possible errors
 	
 	console.log("Errormode before reset: " + errormode);
