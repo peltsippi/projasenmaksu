@@ -149,15 +149,61 @@ function generate_barcode() {
 	}
 	console.log("account number: " + account + " and checksum number: " + acc_checksum);
 	
-	var remainder = acc_checksum % 97;
-	console.log("Account checksum remainder: " + remainder);
-	var control = 97 + 1 - Number(remainder);
-	console.log("97+1 - remainder: " + 	control);
+	//this does not work because 16 numbers is too much for javascript!
+	
+	/*
+	working example:
+	function isIBAN(s){
+    const rearranged = s.substring(4,s.length) + s.substring(0,4);
+    const numeric   = Array.from(rearranged).map(c =>(isNaN(parseInt(c)) ? (c.charCodeAt(0)-55).toString() : c)).join('');
+    const remainder = Array.from(numeric).map(c => parseInt(c)).reduce((remainder, value) => (remainder * 10 + value) % 97,0);
+
+    return  remainder === 1;}
+	
+	This works because Modulo is distributive over addition, substraction and multiplication:
+
+		(a+b)%m = ((a%m)+(b%m))%m
+		(a-b)%m = ((a%m)-(b%m))%m
+		(ab)%m = ((a%m)(b%m))%m
+	
+	*/
+	
+	//split checksum to half
+	
+	var splitlen = 10;
+	var multip = Number("1"+filler(splitlen));
+	console.log("first part split length: " + splitlen);
+	console.log("first part multiplier to make number smaller: " + multip);
+
+	
+	var acc_checksum_start = Number(acc_checksum.substr(0,splitlen));
+
+	console.log("reconstructed first number: " + acc_checksum_start * multip);
+	var acc_checkstum_end = Number(acc_checksum.substr(splitlen,));
+	console.log("split checksum: " + acc_checksum_start + " with multiplier " + multip + ", and : " + acc_checkstum_end);
+	
+	var control = 97;
+	
+	/*
+	(ab+c)%m
+	a = multiplier
+	b= first part of checksum
+	c= second part of checksum
+	(((a%m)(b%m)%m)+(b%m))%m
+	*/
+	var remainder = (((multip % control)*(acc_checksum_start % control))%control+(acc_checkstum_end % control)) % control;
+	console.log("remainder: " + remainder);
+	
 	if (remainder != 1) {
 		console.log("Account number check failed!");
 		alert("Tarkasta tilinumero!");
 		errormode = true;
 	}
+	
+	//var testnumber = toInt32(12345600000785151821)
+	//test acc no FI2112345600000785
+	//var testremainder = testnumber % (97);
+	//console.log("Test calc with example number (" + testnumber + ") : " + testremainder);
 	/*
 	var offset = -55; //offset fr charcodeat function, A = 10 B = 11 etc..
 	var firstletter = account.charCodeAt(0) + offset;
@@ -349,7 +395,7 @@ function filler(qty) {
 	for (i=1; i<= qty; i++) {
 		fill = fill + "0";
 	}
-	console.log("filler: " + fill);
+	console.log("filler: " + fill + " asked.");
 	return fill;
 }
 	
