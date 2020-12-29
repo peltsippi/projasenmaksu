@@ -4,6 +4,8 @@ Makes it easier to calculate certain % of monthly earnings including maximum mem
 
 Changelog:
 
+29.12.	First tests passed, virtual barcode creation works within its own bubble.
+
 26.12.	Started testing with virtual barcode creation
 
 23.12. 	Settings work and rate & max sum can be set and stored to personal plugin settings
@@ -13,6 +15,5 @@ Changelog:
 ?.? 	First version
 
 Notes to self:
-
-TODO:
--Add settings to modify % and max limit
+Now just needed to figure out how barcode creation could be incorporated to the whole mess.
+TODO also: clean the barcode code!
