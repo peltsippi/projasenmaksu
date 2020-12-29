@@ -276,7 +276,7 @@ function generate_barcode() {
 	sum_cnt = totalsum[1];
 	
 	if (sum_eur.length > 6) {
-		alert("Liian iso euromääräinen summa!");
+		alert("Liian iso euromääräinen summa! Max 999999,99€!");
 		errormode = true;
 		console.log("errormode set, too large euro sum");
 	}
