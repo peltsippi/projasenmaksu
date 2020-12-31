@@ -16,51 +16,6 @@
 	*/
 }
 
-function save_options() {
-	console.log("save button pressed");
-  var f_rate = document.getElementById('rate').value;
-  if (!f_rate) {
-	  console.log("rate field empty, issue warning and revert to default");
-	  window.alert("Prosenttiosuus tyhjä, palautetaan vakioarvo");
-	  document.getElementById('rate').value = default_fee;
-	  f_rate = default_fee;
-  }
-  console.log("rate set from form:");
-  console.log(f_rate);
-  var f_max = document.getElementById('max').value;   
-  if (!f_max) {
-	  console.log("max sum field empty issue warning and revert to default");
-	  window.alert("Maksimisumma tyhjä, palautetaan vakioarvo");
-	  document.getElementById('max').value = default_max;
-	  f_max = default_max;
-  }
-  console.log("Storing values: " + f_rate + " & " + f_max);
-  chrome.storage.sync.set({	
-    fee_rate: f_rate,
-	fee_max: f_max  }, 
-	function() {
-		uimessage("Tallennettu.", "1000");
-  });
-}
-/*
- Restores select box and checkbox state using the preferences
- stored in chrome.storage.
-
-function restore_options() {
-  console.log("Haetaan chromesta aikaisemmin asetettuja arvoja");
-  chrome.storage.sync.get({
-    fee_rate: "1.25",
-    fee_max: "49"
-  }, function(items) {
-      console.log("haettu arvot: " + items.fee_rate + " & " + items.fee_max + ". ,asetetaan ne formiin");
-	  
-	  document.getElementById('rate').value = items.fee_rate;
-	  document.getElementById('max').value = items.fee_max;
-
-  });
-}
-*/
-
 function generate_barcode() {
 	//initialize stuff
 	var startcode = "" ;
@@ -350,6 +305,18 @@ function generate_barcode() {
 	//barcode = barcode + checksum; NOTE: virtual barcode does not even require that checksum!
 	
 	uimessage(barcode);
+	
+	//put it also to clipboard:
+	var range = document.createRange();
+	range.selectNode(document.getElementById("status"));
+	window.getSelection().removeAllRanges();
+	window.getSelection().addRange(range);
+	document.execCommand("copy");
+	window.getSelection().removeAllRanges();
+	
+	uimessage("Viivakoodi kopioitu leikepöydälle")
+	setTimeout(() => {  uimessage(barcode); }, 2000);
+	//uimessage(barcode);
 	
 	//this errormode shit does not work, to be done later on.
 	
