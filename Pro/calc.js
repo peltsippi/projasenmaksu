@@ -23,7 +23,7 @@ document.getElementById('settings').addEventListener('click', function() {
 {
   
   let rate= 0.0125;
-  let maxtotal = 45;
+  let maxtotal = document.getElementById('maxtotal').value;
   
   let rate_percent = rate * 100;
   
