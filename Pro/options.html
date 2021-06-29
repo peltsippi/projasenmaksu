@@ -7,13 +7,26 @@
 <table>
 <tr>
 <th>Jäsenmaksun prosenttiosuus:</th>
-<th><input type="number" id="rate" step="0.05"/> % </th>
+<th><input type="number" id="rate" step="0.05"/></th>
+<th> % </th>
 </tr>
 <tr><th>Kattosumma:</th>
-<th><input type="number" id="max" step="0.5"/> €</th>
+<th><input type="number" id="max" step="0.5"/> </th>
+<th> €</th>
+</tr>
+<tr><th>Tilinumero:</th>
+<th><input type="text" id="accno"/> </th>
+<th>IBAN</th>
 </tr>
 </table>
-<br>
+<pre>Add reference no and date to list<pre>
+<table>
+<tr><th>Date</th><th>Ref no.</th></tr>
+<tr><th><input type="date" id="sdate"><th><input type="number" id="refno"></th><th><button type="button" id="addrefno">Lisää listaan</button></th></tr>
+</table>
+<table id="refnos" width="100%">
+<tr><th>Date</th><th>Ref. no.</th></tr>
+</table>
 <div id="status">Odottaa käyttäjän toimia</div>
 <button id="save">Tallenna</button>
 <button id="reset">Palauta vakiot</button>
