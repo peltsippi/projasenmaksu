@@ -24,18 +24,13 @@
         <input type="number" value="2345.67" class="mny" id="income"/>
     </div>
 	<div class="col-6">
-       Maksuperuste (%)
+       Maksuperuste (%) & Maksun katto(€)
     </div>
     <div class="col-2">
-		<input type="number" readonly value="1.25" id="rate_field" />
-    </div>
-	<div class="col-6">
-        Maksun katto(€)
-    </div>
-	<div class="col-2">
-		<input type="number" readonly value="45" id="maxtotal" />
+		<input type="number" readonly value="1.25" id="rate_field" size="4" /><input type="number" readonly value="45" id="maxtotal" size="2" />
     </div>
 </div>
+
   <div class="row my-4">
         <div class="col-9 text-right total">
          Total
@@ -43,8 +38,25 @@
         <div class="col-2 total-val">
           <span id="total_value">0</span>
         </div>
-      </div>
-	  <button id="settings">Avaa asetukset</button>
-	  <script src="calc.js">
+			<div class="col-6">
+		Pvm & viite
+	</div>
+	<div class="col-2">
+		<select id="ref" name="ref">
+			<option value = "2022-12-22;42151215">2022-12-22 - 42151215</option>
+			
+			</select>
+	</div>
+	<input type="text" readonly id="acco" name="acco" hidden />
+	<div class="col-6">
+		Virtuaaliviivakoodi
+	</div>
+	<div class="col-2">
+		<input type="number" readonly id="barcode" size="30" />
+	<div>
+  </div>
+  <button id="settings">Avaa asetukset</button>
+  <script src="calc.js">
+	  
 </script>
 </html>

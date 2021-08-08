@@ -201,7 +201,7 @@ function add_ref_field(action, field1, field2) {
 	if (!field1) {
 		field1 = document.getElementById('sdate').value;			
 		if (!field1) {
-			field1 = "xxxx-xx-xx";
+			field1 = "2222-12-22";
 		}
 	}
 	column1.innerHTML = field1;
