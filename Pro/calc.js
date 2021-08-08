@@ -62,10 +62,18 @@ document.getElementById('settings').addEventListener('click', function() {
   
   var datereftemp = dateref.split(";");
   var date = datereftemp[0];
-  console.log("date: " + date);
+  date = date.split("-");
+  var year = date[0];
+  var month = date[1];
+  var day = date[2];
+  //console.log("date: " + date);
+  console.log("y: " + year + " month: " + month + " day: " + day);
+  
+  
   var refer = datereftemp[1];
   console.log("ref: " + refer);
-  //var acco = document.getElementById("acco").value;
+  var acco = document.getElementById("acco").value;
+  console.log("account: " + acco);
   var moneysum = String(total);
   moneysum = moneysum.split(".");
   var euros = moneysum[0];
@@ -73,7 +81,7 @@ document.getElementById('settings').addEventListener('click', function() {
   console.log("Eurot: " + euros);
   
   //document.getElementById("barcode").value = date & " - " & refer & " - " & acco & " - " & total; 
-  document.getElementById("barcode").value = "jee" + String(date) + String(euros) + String(cents); //euros & cents;
+  document.getElementById("barcode").value = String(year) + String(month) + String(day)+ String(refer) + String(euros) + String(cents) + String(acco).substring(1,); //euros & cents;
 }	
 //todo: this function is twice in the codebase, do something later on!
 function restore_options() {
