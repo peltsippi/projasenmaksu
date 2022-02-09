@@ -1,5 +1,7 @@
 Chrome plugin to calculate union membership fee
 
+Discontinued, they updated mobile app and other payment service systems and things can be done more easily now...
+
 Makes it easier to calculate certain % of monthly earnings including maximum membership limit.
 
 Changelog:
